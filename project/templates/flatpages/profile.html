@@ -1,0 +1,75 @@
+{% extends 'flatpages/base.html' %}
+
+{% block title %}
+Profile
+{% endblock title %}
+
+{% block content %}
+<h1>Пользователь: {{request.user.username}}</h1>
+
+<form action="" method="get">
+       {# Переменная, которую мы передали через контекст, может сгенерировать нам форму с полями #}
+       {{ filterset.form.as_p }}
+       {# Добавим кнопку отправки данных формы #}
+       <input type="submit" value="Найти" />
+</form>
+<hr>
+{% if filterset %}
+{% if my_post %}
+
+<h1>Ваши посты и отклики:</h1>
+
+
+    <table>
+        <tr>
+            <td>Пост</td>
+            <td>Дата добавления отклика</td>
+            <td>Автор отклика</td>
+            <td>Текст отклика</td>
+            <td>Действия</td>
+
+
+        </tr>
+
+        <tr>
+{% for c in my_post %}
+{% if c.reply.all %}
+            {% for p in c.reply.all %}
+            {% if p.status %}
+            <tr>
+            <td><a href="{% url 'post_detail' p.id %}">{{p.post_comment}}</a></td>
+            <td>{{p.time_add}}</td>
+            <td>{{p.author}}</td>
+            <td>{{p.text}}</td>
+            <td><a href="{% url 'comment_delete' p.id %}">Удалить отклик</a></td>
+
+             {% else %}
+            <td>{{p.post_comment}}</td>
+            <td>{{p.time_add}}</td>
+            <td>{{p.author}}</td>
+            <td>{{p.text}}</td>
+            <td><a href="{% url 'accept_comment' p.id %}">Принять отклик</a></td>
+            </tr>
+             {% endif %}
+            {% endfor %}
+              {% else %}
+            <tr>
+            <td><a href="{% url 'post_detail' c.id %}">{{c.title}}</a></td>
+            <td>Откликов пока нет!</td>
+             <td>Откликов пока нет!</td>
+             <td>Откликов пока нет!</td>
+            <td><a href="{% url 'create_comment' c.id %}">Добавить отклик</a></td>
+        </tr>
+ {% endif %}
+
+            {% endfor %}
+
+
+        </tr>
+    </table>
+    {% else %}
+    <h1>У вас нет опубликованных постов!</h1>
+<p class="link-create-post"><a href="{% url 'post_create' %}">Добавить объявление?</a></p>
+    {% endif %}
+{% endif %}
+{% endblock content %}

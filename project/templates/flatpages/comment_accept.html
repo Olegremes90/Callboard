@@ -1,0 +1,25 @@
+{% extends 'flatpages/base.html' %}
+
+{% block content %}
+<h1> Отклик </h1>
+<hr>
+<table>
+     <tr>
+    <td><h3>Пост</h3></td>
+         <td><h3>Автор отклика</h3></td>
+    <td><h3>Текст отклика</h3></td>
+
+     </tr>
+    <tr>
+        <td>{{post.title}}</td>
+        <td>{{object.author}}</td>
+        <td>{{object.text}}</td>
+
+    </tr>
+</table>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Сохранить" />
+</form>
+{% endblock content %}
