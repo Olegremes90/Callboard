@@ -76,17 +76,12 @@ class ProfileView(ListView):
         queryset = super().get_queryset()
         qs = Comment.objects.all()
         self.filterset = CommentFilter(self.request.GET, request=self.request, queryset=qs)
-        print(self.filterset)
         return self.filterset.qs
 
     def get_context_data (self, **kwargs):
        context = super().get_context_data(**kwargs)
        my_author = Author.objects.get(user_id=self.request.user.id)
-       print(my_author)
-       print(my_author.id)
        my_post = Post.objects.filter(authors_id=my_author.id)
-       print(self.request.user.id)
-       print(my_post)
        context['my_post'] = my_post
        context['filterset'] = self.filterset
        return context

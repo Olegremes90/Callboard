@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Comment, Post, Author
+from .models import Comment, Post, Author, User
 from django.core.mail import send_mail
 
 
@@ -26,7 +26,17 @@ def my_handler(sender, instance, created, **kwargs):
         fail_silently=False,
 
     )
-@receiver(post_save, sender=Post)
+def add_user_author(request):
+    user = request.user
+    author = Author.objects.all()
+    user_author = author.add(user)
+    return user_author
+
+
+
+@receiver(post_save, sender=Author)
 def add_author(sender, instance, created, **kwargs):
-    if instance is created and instance.post.authors.is_authenticated and instance.post.authors not in Author.objects.all():
-        return instance.post.authors.create
+    if instance.user.is_authenticated and instance.authors.user not in Author.objects.all():
+        add_user_author()
+
+
