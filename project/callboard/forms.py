@@ -33,6 +33,7 @@ class PostForm(forms.ModelForm):
 
 
 class CommentForm(forms.ModelForm):
+   text = forms.CharField(min_length=20, label="Текст")
    class Meta:
          model = Comment
          fields = ['text',

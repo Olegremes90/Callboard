@@ -38,7 +38,7 @@ def ourBranches(request):
    if request is None:
         return Post.objects.none()
 
-   author=Author.objects.get(user_id=request.user.id)
+   author=User.objects.get(id=request.user.id)
    post = author.id
    return Post.objects.filter(authors_id=post)
 

@@ -7,6 +7,7 @@ Posts
 {% block content %}
 
 <li><h2>{{post.title}}</h2>
+    <h2>Автор:{{post.authors}}</h2>
     <p>{{post.upload|safe}}</p>
     <p>{{post.text|safe}}</p>
      <h3>Отклики<h3/>
@@ -15,7 +16,6 @@ Posts
     <tr>
         <td><h4>Автор</h4></td>
         <td><h4>Время добавления</h4></td>
-        <td><h4>Cтатус</h4></td>
         <td><h4>Текст</h4></td>
   </tr>
 
@@ -23,11 +23,6 @@ Posts
 <tr>
     <td><h4>{{c.author}}</h4></td>
        <td><p>{{c.time_add}}</p></td>
-    <td>{% if c.status %}
-    <p>Принят</p>
-    {% else %}
-    <p>Не принят</p>
-    {% endif %}</td>
     <td>{{c.text}}</td>
     {% endfor %}
      </tr>
@@ -36,12 +31,19 @@ Posts
 <h1>У данного поста пока нет откликов!</h1>
 
 {% endif %}
+         <hr>
+         <h1>Комментировать:</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Добавить" />
+</form>
 
-    {% if request.user.is_authenticated %}
+        {% if request.user.is_authenticated %}
       <h2>Действия</h2>
-         <p class="link-create-comment"><a href="{% url 'create_comment' posts %}">Добавить отклик</a></p>
+
     <p class="link-create-post"><a href="{% url 'post_create' %}">Добавить объявление</a></p>
-    <p class="link-delete-post"><a href="{% url 'post_delete' post.id %}">Удалить объявление</a></p>
+    <p class="link-delete-post"><a href="{% url 'post_delete' posts %}">Удалить объявление</a></p>
     <p class="link-delete-post"><a href="{% url 'post_update' post.id %}">Редактировать</a></p>
     {% endif %}
 

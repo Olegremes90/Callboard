@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'callboard.apps.CallboardConfig',
-    'tinymce',
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django_filters',

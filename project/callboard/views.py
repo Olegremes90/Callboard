@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Comment, User, Author
+from .models import Post, Comment, User
 from .forms import PostForm, CommentForm, AcceptForm
 from django.urls import reverse_lazy
 from .filters import PostFilter, CommentFilter
+from django.views.generic.edit import FormMixin
+from django.http import HttpResponseForbidden
 
-from django.shortcuts import   reverse
+from django.shortcuts import reverse
 
 
 class PostList(ListView):
@@ -24,10 +26,31 @@ class PostList(ListView):
         context['filterset'] = self.filterset
         return context
 
-class PostDetail(DetailView):
+class PostDetail(FormMixin, DetailView):
     model = Post
     template_name = 'flatpages/post_detail.html'
-    context_object_name = 'post'
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'pk': self.object.pk})
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+
+    def form_valid(self, form):
+        comment = form.save(commit=False)
+        form.instance.post_comment = Post.objects.get(id=self.kwargs['pk'])
+        form.instance.author_id = User.objects.get(id=self.request.user.id).id
+        comment.save()
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -38,39 +61,12 @@ class PostDetail(DetailView):
         return context
 
 
-
-
-
-
-class CommentCreate(CreateView):
-    model = Comment
-    form_class = CommentForm
-    template_name = 'flatpages/create_comment.html'
-    success_url = reverse_lazy('post_comment')
-#
-    def form_valid(self, form):
-        comment = form.save(commit=False)
-        comment.post_comment = Post.objects.get(id=self.kwargs['pk'])
-        form.instance.post = comment.post_comment
-        comment.author_id = User.objects.get(id=self.request.user.id).id
-        form.instance.author_id = comment.author_id
-        comment.status = True
-        form.instance.status = comment.status
-        print(comment.author_id)
-        comment.save()
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        pk = self.kwargs["pk"]
-        return reverse("post_detail", kwargs={"pk": pk})
-
-
-
 class ProfileView(ListView):
     model = Comment
     template_name = 'flatpages/profile.html'
     context_object_name = 'posts'
     success_url = reverse_lazy('post_comment')
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -80,7 +76,7 @@ class ProfileView(ListView):
 
     def get_context_data (self, **kwargs):
        context = super().get_context_data(**kwargs)
-       my_author = Author.objects.get(user_id=self.request.user.id)
+       my_author = User.objects.get(id=self.request.user.id)
        my_post = Post.objects.filter(authors_id=my_author.id)
        context['my_post'] = my_post
        context['filterset'] = self.filterset
@@ -98,7 +94,7 @@ class PostCreate(CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.content_choice='TA'
-        post.authors_id = Author.objects.get(user_id=self.request.user.id).id
+        post.authors_id = User.objects.get(id=self.request.user.id).id
         form.instance.authors_id = post.authors_id
         return super().form_valid(form)
 
@@ -128,11 +124,11 @@ class AcceptResponse(UpdateView):
     template_name = 'flatpages/comment_accept.html'
     success_url = reverse_lazy('profile')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        post = Post.objects.get(id=self.kwargs['pk'])
-        context['post'] = post
-        return context
+    #def get_context_data(self, **kwargs):
+     #   context = super().get_context_data(**kwargs)
+        #post = Post.objects.get(id=self.kwargs['pk'])
+      #  context['post'] = post
+       # return context
 
 
 

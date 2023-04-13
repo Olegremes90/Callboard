@@ -1,5 +1,5 @@
 {% extends 'flatpages/base.html' %}
-
+{% load custom_tags %}
 {% block title %}
 Profile
 {% endblock title %}
@@ -42,9 +42,10 @@ Profile
             <td>{{p.author}}</td>
             <td>{{p.text}}</td>
             <td><a href="{% url 'comment_delete' p.id %}">Удалить отклик</a></td>
-
+            </tr>
              {% else %}
-            <td>{{p.post_comment}}</td>
+            <tr>
+            <td><a href="{% url 'post_detail' p.id %}">{{p.post_comment}}</a></td>
             <td>{{p.time_add}}</td>
             <td>{{p.author}}</td>
             <td>{{p.text}}</td>
@@ -72,4 +73,24 @@ Profile
 <p class="link-create-post"><a href="{% url 'post_create' %}">Добавить объявление?</a></p>
     {% endif %}
 {% endif %}
+
+{% if page_obj.has_previous %}
+       {# Для каждой ссылки пагинации указываем обработку через новый тег #}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
 {% endblock content %}
