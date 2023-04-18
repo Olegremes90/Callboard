@@ -126,11 +126,11 @@ class AcceptResponse(UpdateView):
     template_name = 'flatpages/comment_accept.html'
     success_url = reverse_lazy('profile')
 
-    #def get_context_data(self, **kwargs):
-     #   context = super().get_context_data(**kwargs)
-        #post = Post.objects.get(id=self.kwargs['pk'])
-      #  context['post'] = post
-       # return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = Post.objects.get(id=self.kwargs['pk'])
+        context['post'] = post
+        return context
 
 
 
