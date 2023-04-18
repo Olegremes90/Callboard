@@ -68,6 +68,7 @@ class ProfileView(ListView):
     success_url = reverse_lazy('post_comment')
     paginate_by = 10
 
+
     def get_queryset(self):
         queryset = super().get_queryset()
         qs = Comment.objects.all()
@@ -81,6 +82,7 @@ class ProfileView(ListView):
        context['my_post'] = my_post
        context['filterset'] = self.filterset
        return context
+
 
 
 

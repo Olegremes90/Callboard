@@ -13,7 +13,7 @@ Posts
        <input type="submit" value="Найти" />
 </form>
 <hr>
-
+{% if posts %}
     {% for p in posts %}
     <li><h2>{{p.title}}</h2>
         {{p.upload|safe}}
@@ -23,6 +23,10 @@ Posts
 
     </li>
     {% endfor %}
+{% else %}
+<h1>Сделайте первое объявление!</h1>
+<p class="link-create-post"><a href="{% url 'post_create' %}">Добавить объявление</a></p>
+{% endif %}
 </ul>
 {% if page_obj.has_previous %}
        {# Для каждой ссылки пагинации указываем обработку через новый тег #}
