@@ -51,6 +51,4 @@ class CommentFilter(FilterSet):
         label='Объявление',
         empty_label='все объявления',
     )
-    #class Meta:
-     #   model = Post
-      #  fields = ['post_comment',]
+

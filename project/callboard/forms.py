@@ -24,10 +24,6 @@ class PostForm(forms.ModelForm):
            raise ValidationError(
                "Описание не должно быть идентично названию."
            )
-       #if author != User.objects.get(id=self.request.user.id):
-        #   raise ValidationError(
-         #      'Автор указаан не верно.'
-          # )
 
        return cleaned_data
 

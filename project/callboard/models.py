@@ -27,6 +27,7 @@ class Post(models.Model):
     time_creation = models.DateField(auto_now_add=True)
     authors = models.ForeignKey(User, on_delete=models.CASCADE)
     upload = RichTextUploadingField(blank=True, null=True)
+    subscribers = models.ManyToManyField(User, related_name='subscribe')
 
 
 

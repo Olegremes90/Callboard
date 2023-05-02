@@ -6,8 +6,11 @@ from django.urls import reverse_lazy
 from .filters import PostFilter, CommentFilter
 from django.views.generic.edit import FormMixin
 from django.http import HttpResponseForbidden
-
+from django.contrib.auth.models import Group
 from django.shortcuts import reverse
+from django.http import HttpResponse
+from django.views import View
+
 
 
 class PostList(ListView):
@@ -55,6 +58,7 @@ class PostDetail(FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         post = Post.objects.get(id=self.kwargs['pk'])
+        context['is_not_subscriber'] = self.request.user not in User.objects.filter(groups__name='subscribers')
         print(post)
         context['com'] = Comment.objects.filter(post_comment=post)
         context['posts'] = post.id
@@ -141,3 +145,12 @@ class AcceptResponse(UpdateView):
        comment.text =Comment.objects.get(id=self.kwargs['pk']).text
        return super().form_valid(form)
 
+
+def subscribe(request):
+    user = request.user
+    group = Group.objects.get(name='subscribers')
+    user.groups.add(group)
+
+
+    message = 'Вы успешно подписались на рассылку посследних объявлений.'
+    return render(request, 'flatpages/subscribe.html',{ 'message': message })
