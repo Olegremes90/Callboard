@@ -5,7 +5,9 @@ Posts
 {% endblock title %}
 
 {% block content %}
-
+<br>
+<br>
+<br>
 <form action="" method="get">
        {# Переменная, которую мы передали через контекст, может сгенерировать нам форму с полями #}
        {{ filterset.form.as_p }}
@@ -15,13 +17,13 @@ Posts
 <hr>
 {% if posts %}
     {% for p in posts %}
-    <li><h2>{{p.title}}</h2>
+    <h2>{{p.title}}</h2>
         {{p.upload|safe}}
     <p>{{p.text|truncatewords:50|safe}}</p>
 
     <p class="#"><a href="{% url  'post_detail' p.id %}">Читать объявление</a></p>
 
-    </li>
+
     {% endfor %}
 {% else %}
 <h1>Сделайте первое объявление!</h1>

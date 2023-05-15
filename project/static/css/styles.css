@@ -309,9 +309,11 @@ svg {
 }
 
 table {
-  caption-side: bottom;
-  border-collapse: collapse;
+border-spacing: 0 10px;
+font-family: 'Open Sans', sans-serif;
+font-weight: bold;
 }
+
 
 caption {
   padding-top: 0.5rem;
@@ -10837,3 +10839,4 @@ section {
   padding-top: 9rem;
   padding-bottom: 9rem;
 }
+
